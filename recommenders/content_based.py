@@ -37,7 +37,11 @@ from sklearn.feature_extraction.text import CountVectorizer
 # Importing data
 movies = pd.read_csv('resources/data/movies.csv', sep = ',',delimiter=',')
 ratings = pd.read_csv('resources/data/ratings.csv')
-movies.dropna(inplace=True)
+imdb_data = pd.read_csv('resources/data/imdb_data.csv')
+movies_df = imdb_data.merge(movies, left_on='movieId', right_on='movieId')
+movies_df.drop(['runtime','budget','movieId'],axis=1,inplace=True)
+#movies_df.fillna('')
+#movies.dropna(inplace=True)
 
 def data_preprocessing(subset_size):
     """Prepare data for use within Content filtering algorithm.
@@ -53,8 +57,42 @@ def data_preprocessing(subset_size):
         Subset of movies selected for content-based filtering.
 
     """
-    # Split genre data into individual words.
-    movies['keyWords'] = movies['genres'].str.replace('|', ' ')
+
+    def to_string(df):
+     for col in df.columns:
+         if df[col].dtype in ['int64','float','object']:
+                df[col] = df[col].astype(str)
+     return df
+
+    df_1 = to_string(movies_df)
+
+    df_1['director'] = df_1['director'].apply(lambda x: "".join(x.lower() for x in x.split()))
+
+    df_1['title_cast'] = df_1['title_cast'].apply(lambda x: "".join(x.lower() for x in x.split()))
+    df_1['title_cast'] = df_1['title_cast'].map(lambda x: x.split('|')[:3])
+
+    df_1['plot_keywords'] = df_1['plot_keywords'].map(lambda x: x.split('|')[:5])
+    df_1['plot_keywords'] = df_1['plot_keywords'].apply(lambda x: " ".join(x))
+
+    # Discarding the pipes between the genres 
+    df_1['genres'] = df_1['genres'].map(lambda x: x.lower().split('|'))
+    df_1['genres'] = df_1['genres'].apply(lambda x: " ".join(x))
+
+    df_1.set_index('title', inplace = True)
+
+    df_1['KeyWords'] = ''
+    columns = df_1.columns
+    for index, row in df_1.iterrows():
+         words = ''
+         for col in columns:
+             if col not in ['director','plot_keywords','genres']:
+                 words = words + ' '.join(row[col])+ ' '
+             else:
+                 words = words + row[col]+ ' '
+         row['KeyWords'] = words
+
+    df_1.reset_index(inplace=True)
+
     # Subset of the data
     movies_subset = movies[:subset_size]
     return movies_subset

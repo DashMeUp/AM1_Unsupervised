@@ -51,12 +51,6 @@ def main():
     # ----------- !! THIS CODE MUST NOT BE ALTERED !! -------------------
     # -------------------------------------------------------------------
     page_selection = st.sidebar.selectbox("Choose Option", page_options)    
-    if page_selection == "Data Summary":
-        st.image("genres.png")
-        st.image("movies.png")
-        st.image("genremovie.png")
-        st.image("moviesgenre.png")
-        st.image("ratingsmovie.png")
 
     if page_selection == "Recommender System":
         # Header contents
@@ -110,6 +104,13 @@ def main():
     if page_selection == "Solution Overview":
         st.title("Solution Overview")
         st.write("Describe your winning approach on this page")
+
+    if page_selection == "Data Summary":
+        st.image("genres.png")
+        st.image("movies.png")
+        st.image("genremovie.png")
+        st.image("moviesgenre.png")
+        st.image("ratingsmovie.png")
 
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
