@@ -35,9 +35,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 
 # Importing data
-movies = pd.read_csv('resources/data/movies.csv', sep = ',',delimiter=',')
+movies = pd.read_csv('resources/data/movies.csv')
 ratings = pd.read_csv('resources/data/ratings.csv')
-imdb_data = pd.read_csv('../unsupervised_data/unsupervised_movie_data/imdb_data.csv')
+imdb_data = pd.read_csv('resources/data/imdb_data.csv')
 movies_df = imdb_data.merge(movies, left_on='movieId', right_on='movieId')
 movies_df.drop(['runtime','budget','movieId'],axis=1,inplace=True)
 #movies_df.fillna('')
@@ -89,13 +89,15 @@ def data_preprocessing(subset_size):
              else:
                  words = words + row[col]+ ' '
          row['KeyWords'] = words
-    # resetting our index back to default index
-    df_1.reset_index(inplace=True)
-
+   
     # Subset of the data
     movies_subset = df_1[:subset_size]
     return movies_subset
-
+def check(movie_name,indices):
+    if(len(indices[indices==movie_name])==0):
+        return 0
+    else:
+        return indices[indices==movie_name].index[0]
 # !! DO NOT CHANGE THIS FUNCTION SIGNATURE !!
 # You are, however, encouraged to change its content.  
 def content_model(movie_list,top_n=10):
@@ -117,16 +119,18 @@ def content_model(movie_list,top_n=10):
     """
     # Initializing the empty list of recommended movies
     recommended_movies = []
-    data = data_preprocessing(27000)
+    data = data_preprocessing(10000)
     # Instantiating and generating the count matrix
     count_vec = CountVectorizer()
     count_matrix = count_vec.fit_transform(data['KeyWords'])
-    indices = pd.Series(data['title'])
+    indices = pd.Series(data.index)
     cosine_sim = cosine_similarity(count_matrix, count_matrix)
     # Getting the index of the movie that matches the title
-    idx_1 = indices[indices == movie_list[0]].index[0]
-    idx_2 = indices[indices == movie_list[1]].index[0]
-    idx_3 = indices[indices == movie_list[2]].index[0]
+   
+    
+    idx_1 = check("".join(movie_list[0][:1]),indices)
+    idx_2 = check("".join(movie_list[1][:1]),indices)
+    idx_3 = check("".join(movie_list[2][:1]),indices)
     # Creating a Series with the similarity scores in descending order
     rank_1 = cosine_sim[idx_1]
     rank_2 = cosine_sim[idx_2]

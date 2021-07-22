@@ -17,12 +17,12 @@
     ---------------------------------------------------------------------
 
     Description: This file is used to launch a minimal streamlit web
-	application. You are expected to extend certain aspects of this script
+    application. You are expected to extend certain aspects of this script
     and its dependencies as part of your predict project.
 
-	For further help with the Streamlit framework, see:
+    For further help with the Streamlit framework, see:
 
-	https://docs.streamlit.io/en/latest/
+    https://docs.streamlit.io/en/latest/
 
 """
 # Streamlit dependencies
@@ -47,11 +47,11 @@ def main():
     # you are welcome to add more options to enrich your app.
     page_options = ["Recommender System","Data Summary","Solution Overview"]
 
+
     # -------------------------------------------------------------------
     # ----------- !! THIS CODE MUST NOT BE ALTERED !! -------------------
     # -------------------------------------------------------------------
-    page_selection = st.sidebar.selectbox("Choose Option", page_options)    
-
+    page_selection = st.sidebar.selectbox("Choose Option", page_options)
     if page_selection == "Recommender System":
         # Header contents
         st.write('# Movie Recommender Engine')
@@ -105,16 +105,20 @@ def main():
         st.title("Solution Overview")
         st.write("Describe your winning approach on this page")
 
-    if page_selection == "Data Summary":
-        st.image("genres.png")
-        st.image("movies.png")
-        st.image("genremovie.png")
-        st.image("moviesgenre.png")
-        st.image("ratingsmovie.png")
-
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
-
+    if page_selection == "Data Summary":
+        st.image("ratingsdistr.png")
+        st.write("The distribution of the ratings indicate that most movies have a rating of atleast 3 and a rating of 4 is the most popular. The mean rating is around 3.5. This means that most of the movies in the dataset have a fairly good score. It also means that the ratings are skewed to the right which is proven by the mean and median calcualtion below. Further, it can inferred that based on the movies which are rated below 3, 15.4% of the movies in the dataset are 'bad' movies.")
+        st.image("highratings.png")
+        st.write("As expected, the higher the average ratings, the higher the number of ratings the movie has.")
+        st.image("director.png")
+        st.write("As expected, most directors with a high number of movies have average to good movie ratings. It would be great to determine if the ratings are affected by the year at which the ratings were made i.e. do the ratings decrease as the movie gets older? With changes in technology, audio and visuals are constantly improving. Due to this, people might give an older moviewith a low score as years progress as they would be comparing it with the current movies with better graphics.")
+        st.image("plot.png")
+        st.write("From the plot above, there is a slight drop from 1995 to 2020 in annual moving ratings howver it is not significant, at all. It seems as if the ratings given to a movie each year are not hugely affected by the year that the rating was given (there is no pattern in the ratings). From this, it can be concluded that the year of the rating has no significance in predicting the ratings of the movies. Movie duration can also be an important feature to consider when making a rating or when recommending a movie to someone as there might be viewers who do not like watching long movies or vice versa.")
+        st.image("drama.png")
+        st.write("Drama is the most common genre throughout the movies. Genres are important as they show the preferences of viewers and based on the genre that a viewer likes, movies of the same genre can be recommended. Movies in the dataset are associated with tags. The relevance of these tags is also provided.")
 
 if __name__ == '__main__':
     main()
+    
